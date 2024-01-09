@@ -1,0 +1,26 @@
+{
+  "name": "auto-push-alist",
+  "version": "1.0.0",
+  "description": "自动推动目录到Alist",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build index.js",
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wj2008/auto-push-alist.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wj2008/auto-push-alist/issues"
+  },
+  "homepage": "https://github.com/wj2008/auto-push-alist#readme",
+  "dependencies": {
+    "@actions/core": "^1.9.1",
+    "@vercel/ncc": "^0.34.0",
+    "axios": "^1.6.5"
+  }
+}
