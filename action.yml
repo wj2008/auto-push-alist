@@ -2,11 +2,8 @@ name: "auto-push-alist"
 description: "自动推动目录到 Alist"
 # 定义输入参数
 inputs:
-  username:
-    description: "alist的用户名"
-    required: true
-  password:
-    description: "alist的密码"
+  token:
+    description: "alist的token"
     required: true
   upUrl:
     description: "alist地址"
@@ -16,9 +13,15 @@ inputs:
     required: true
   upDir:
     description: "本地要上传的目录"
-    required: true
+    required: false
+  upFile:
+    description: "本地要上传的文件"
+    required: false
+  asTask:
+    description: "是否添加为任务"
+    required: false
 runs:
-  # 脚本运行环境（按官方文档给的12版本来使用）
-  using: "node12"
+  # 脚本运行环境（按官方文档给的20版本来使用）
+  using: "node20"
   # 脚本执行入口（这里我们要用@vercel/ncc编译）
   main: "dist/index.js"

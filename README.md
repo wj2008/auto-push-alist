@@ -4,22 +4,25 @@
 
 ## Inputs
 
-|参数|描述|
-|----|----|
-|`username`|alist的用户名|
-|`password`|alist的密码|
-|`upUrl`|alist地址|
-|`saveDir`|alist保存的路径|
-|`upDir`|本地要上传的目录|
+|参数|描述|必填|
+|----|----|----|
+|`token`|alist的Token|是|
+|`upUrl`|alist地址|是|
+|`saveDir`|alist保存的路径|是|
+|`upDir`|本地要上传的目录|否|
+|`upFile`|本地要上传的文件|否|
+|`asTask`|是否添加为任务|否|
 
 ## Example usage
 
+上传文件夹
 ```yaml
-uses: wj2008/auto-push-alist@master
+uses: wj2008/auto-push-alist@v1
 with:
-  username: ${{secrets.alistName}}
-  password: ${{secrets.alistPasswd}}
+  token: ${{secrets.alistToken}}
   upUrl: http://v5.123456.xyz
   saveDir: /public/baiduyun/
   upDir: ./apks
+  upFile: ./apk2/abc.apk
+  asTask: ture
 ```

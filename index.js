@@ -5,29 +5,23 @@ const core = require("@actions/core");
 let filepaths = [];
 
 // 接收输入参数
-const username = core.getInput("username");
-const password = core.getInput("password");
+const token = core.getInput("token");
 const upUrl = core.getInput("upUrl");
 const saveDir = core.getInput("saveDir");
 const upDir = core.getInput("upDir");
+const upFile = core.getInput("upFile");
+const asTaskInput = core.getInput("asTask");
+let asTask = false;
+if (asTaskInput.toLowerCase() === "true") {
+  asTask = true;
+} 
 
-async function getToken() { 
-  try {
-    let resp = await axios.post(`${upUrl}/api/auth/login`, { username, password });
-    return resp.data.data.token;
-  } catch (error) {
-  }
-  return null;
-}
-
-async function upAlist(token, filePath) {
+async function upAlist(filePath) {
   try {
     const fileName = path.basename(filePath);
     const fileStats = fs.statSync(filePath);
-    const size = fileStats.size;
-    const enpath = encodeURIComponent(`${saveDir}/${fileName}`);
-    const fileData = fs.readFileSync(filePath);
-    let resp = await axios.put(`${upUrl}/api/fs/put`, fileData, { headers: { 'Authorization': token, 'File-Path': enpath, 'Content-Type': 'application/octet-stream', 'Content-Length': size } });
+    const enpath = encodeURIComponent(`${saveDir}/${upDir ? filePath : fileName}`);
+    let resp = await axios.put(`${upUrl}/api/fs/put`, fs.readFileSync(filePath), { headers: { 'Authorization': token, 'As-Task': asTask, 'File-Path': enpath, 'Content-Type': 'application/octet-stream', 'Content-Length': fileStats.size } });
     console.log(filePath, ' -> ', resp.data.message);
   } catch (error) {
     console.error(filePath, ' -> Error upAlist :', error.message);
@@ -58,13 +52,10 @@ function readFileSync(filepath) {
 
 async function update() {
   try {
-    let token = await getToken();
-    if (!token) { 
-      return console.log('token is null, plz check your url');
-    }
-    readFileSync(upDir);
+    if (upFile) filepaths.push(upFile);
+    if (upDir) readFileSync(upDir);
     for await (file of filepaths) {
-      await upAlist(token, file);
+      await upAlist(file);
     }
     await refresh(token);
   } catch (e) {
