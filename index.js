@@ -24,7 +24,7 @@ async function upAlist(filePath) {
     let resp = await axios.put(`${upUrl}/api/fs/put`, fs.readFileSync(filePath), { headers: { 'Authorization': token, 'As-Task': asTask, 'File-Path': enpath, 'Content-Type': 'application/octet-stream', 'Content-Length': fileStats.size } });
     console.log(filePath, ' -> ', resp.data.message);
   } catch (error) {
-    console.error(filePath, ' -> Error upAlist :', error.message);
+    console.error(filePath, ' -> Error upAlist');
   }
 }
 
@@ -33,7 +33,7 @@ async function refresh(token) {
     let resp = await axios.post(`${upUrl}/api/fs/list`, { path: saveDir, refresh: true }, { headers: { 'Authorization': token, 'Content-Type': 'application/json' } });
     console.log('refresh -> ', resp.data.message);
   } catch (error) {
-    console.error('refresh error ', error.message);
+    console.error('refresh error ');
   }
 }
 
