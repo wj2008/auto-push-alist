@@ -12,25 +12,24 @@ const upDir = core.getInput("upDir");
 const upFile = core.getInput("upFile");
 const asTaskInput = core.getInput("asTask");
 let asTask = false;
-if (asTaskInput.toLowerCase() === "true") {
-  asTask = true;
-} 
+if (asTaskInput.toLowerCase() === "true") asTask = true;
 
 async function upAlist(filePath) {
   try {
     const fileName = path.basename(filePath);
     const fileStats = fs.statSync(filePath);
     const enpath = encodeURIComponent(`${saveDir}/${upDir ? filePath : fileName}`);
-    let resp = await axios.put(`${upUrl}/api/fs/put`, fs.readFileSync(filePath), { headers: { 'Authorization': token, 'As-Task': asTask, 'File-Path': enpath, 'Content-Type': 'application/octet-stream', 'Content-Length': fileStats.size } });
+    let resp = await axios.put(`${upUrl}/api/fs/put`, fs.readFileSync(filePath), { timeout: 30_000, headers: { 'Authorization': token, 'As-Task': asTask, 'File-Path': enpath, 'Content-Type': 'application/octet-stream', 'Content-Length': fileStats.size } });
     console.log(filePath, ' -> ', resp.data.message);
   } catch (error) {
-    console.error(filePath, ' -> Error upAlist');
+    const safeMessage = String(error.message).replaceAll(upUrl, '[ALIST_URL]');
+    console.error(filePath, ` -> Error upAlist: ${safeMessage}`);
   }
 }
 
 async function refresh(token) {
   try {
-    let resp = await axios.post(`${upUrl}/api/fs/list`, { path: saveDir, refresh: true }, { headers: { 'Authorization': token, 'Content-Type': 'application/json' } });
+    let resp = await axios.post(`${upUrl}/api/fs/list`, { path: saveDir, refresh: true }, { timeout: 30_000, headers: { 'Authorization': token, 'Content-Type': 'application/json' } });
     console.log('refresh -> ', resp.data.message);
   } catch (error) {
     console.error('refresh error ');
